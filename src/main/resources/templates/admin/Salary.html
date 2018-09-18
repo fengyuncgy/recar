@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/style.min_EDT.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/master.css">
+    <link rel="stylesheet" type="text/css" href="css/plugins/iCheck/custom.css">
+    <link rel="stylesheet" type="text/css" href="js/plugins/layer/skin/layer.css">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+    <script src="layui/layui.js" charset="utf-8"></script>
+    <title>账号设置</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>员工列表</h5>
+                </div>
+                <div class="ibox-content" id="tab-box">
+                    <div class="row m-b-lg">
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover" lay-filter="demo" id="ListTB">
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/plugins/iCheck/icheck.min.js"></script>
+<script src="js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<script src="js/plugins/layer/layer.min.js"></script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+</script>
+
+
+<script>
+    layui.use(['table','laydate'], function () {
+        var table = layui.table,laydate=layui.laydate;
+        var opt = {
+            elem: '#ListTB'
+            , url: '/employee/findSalaryDto'
+            , cols: [
+                [
+                    {type: 'checkbox'}
+                    , {field: 'employeeid', width: 80, title: 'ID'}
+                    , {field: 'name', width: 80, title: '名称'}
+                    , {field: 'baseSalary', width: 80, title: '基本工资'}
+                    , {field: 'addSalary', width: 80, title: '加薪'}
+                    , {field: 'finishCount', title: '完成订单量'}
+                    , {field: 'monthCount', title: '本月完成量', width: 200}
+                    , {field: 'hours', minWidth: 50, title: '工时价格'}
+                    , {field: 'addProportion', title: '提成比例'}
+                    , {title:'操作',align: 'center', toolbar: '#barDemo'}
+
+                ]
+            ]
+            , page: true
+            , request: {
+                pageName: 'page',
+                limitName: 'size'
+            }
+
+        }
+        table.render(opt);
+
+        table.on('tool(demo)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data //获得当前行数据
+                , layEvent = obj.event; //获得 lay-event 对应的值
+           if (layEvent === 'edit') {
+               layer.open({
+                   title: '修改',
+                   type: 1,
+                   skin: 'layui-layer-rim', //加上边框
+                   area: ['420px', '440px'],
+                   shadeClose: false, //点击遮罩关闭
+                   content: '<div >\n' +
+                   '    <form action="" class="layui-form form-horizontal">\n' +
+                   '     <input type="hidden" name="employeeid" value="'+data.employeeid+'" />' +
+                   '        <div class="form-box">\n' +
+                   '            <div class="form-group"><label class="col-sm-3 control-label">名称:</label>\n' +
+                   '                <div class="col-sm-8 no-padding">\n' +
+                   '                    <input disabled type="text" lay-verify="title" value="'+data.name+'" name="name" class="form-control" id="updateName">\n' +
+                   '                </div>\n' +
+                   '            </div>\n' +
+                   '            <div class="form-group">\n' +
+                   '                <label class="col-sm-3 control-label">基本工资:</label>\n' +
+                   '                <div class="col-sm-8 no-padding">\n' +
+                   '                    <input type="text" value="'+data.baseSalary+'" name="baseSalary" class="form-control" >\n' +
+                   '                </div>\n' +
+                   '                \'\n' +
+                   '            </div>\n' +
+                   '            <div class="form-group">\n' +
+                   '                <label class="col-sm-3 control-label">工时:</label>\n' +
+                   '                <div class="col-sm-8 no-padding">\n' +
+                   '                    <input type="text" value="'+data.hours+'" name="hours" class="form-control" >\n' +
+                   '                </div>\n' +
+                   '                \'\n' +
+                   '            </div>\n' +
+                   '            <div class="form-group">\n' +
+                   '                <label class="col-sm-3 control-label">提成比例:</label>\n' +
+                   '                <div class="col-sm-8 no-padding">\n' +
+                   '                    <input  type="text" name="addProportion" value="'+data.addProportion+'"  class="form-control" />\n' +
+                   '                </div>\n' +
+                   '            </div>\n' +
+                   '            <div class="col-sm-12 m-t text-center">\n' +
+                   '                <button class="btn btn-primary " id="BtnUpdate" lay-submit lay-filter="updateEmployees" type="button"><i\n' +
+                   '                        class="fa fa-floppy-o"></i> 修改\n' +
+                   '                </button>\n' +
+                   '            </div>\n' +
+                   '        </div>\n' +
+                   '    </form>\n' +
+                   '</div>',
+
+               });
+
+            }
+        });
+
+
+    });
+    function ajaxRequest(url,type,data) {
+        $.ajax({
+            type: type,
+            url: url,
+            data: data,
+            contentType: 'application/json;charset=UTF-8',
+            dataType: "json",
+            success: function (data) {
+                layer.msg(data.message, {
+                    time: 0 //不自动关闭
+                    , btn: ['确定']
+                    , yes: function (index) {
+                        layer.close(index);
+                        window.location.href = '/Salary'
+                    }
+                });
+
+            }
+        });
+    }
+
+    layui.use('form', function () {
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(updateEmployees)', function (data) {
+            var val = JSON.stringify(data.field)
+            var url = '/employee/updateSalary'
+            var type = 'POST'
+            ajaxRequest(url, type, val)
+        });
+    });
+</script>
+<script>
+
+
+    $(document).ready(function () {
+
+
+
+    });
+
+</script>
+</body>
+</html>

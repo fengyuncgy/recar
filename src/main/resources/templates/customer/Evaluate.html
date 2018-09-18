@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/style.min_EDT.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/master.css">
+    <link rel="stylesheet" type="text/css" href="css/plugins/iCheck/custom.css">
+    <link rel="stylesheet" type="text/css" href="js/plugins/layer/skin/layer.css">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+    <script src="layui/layui.js" charset="utf-8"></script>
+    <title>评价信息</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>评价信息</h5>
+                    <div style="float:right; ">
+                        <input id="id" name="id" type="hidden"/>
+                        <h5 id="name" style="margin-left: 200px"></h5>
+                        <h5 id="sex" style="margin-left: 30px">性别：</h5>
+                    </div>
+                </div>
+                <div class="ibox-content" id="tab-box">
+                    <div class="row m-b-lg">
+                        <div class="col-sm-12">
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover" lay-filter="demo" id="ListTB">
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/plugins/iCheck/icheck.min.js"></script>
+<script src="js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<script src="js/plugins/layer/layer.min.js"></script>
+<script src="js/util.js"></script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">评价</a>
+</script>
+<script>
+    layui.use('table', function () {
+        var table = layui.table;
+        var opt = {
+            elem: '#ListTB'
+            , url: '/evaluate/findByCarid?id='+getCustomerCarId($('#id').val())
+            , cols: [
+                [
+                    {type: 'checkbox'}
+                    , {field: "evaluateid", width: 40, title: 'ID'}
+                    , {field: 'orderName', width: 120, title: '名称'}
+                    , {field: 'server', width: 120, title: '服务评分'}
+                    , {field: 'maintenance', width: 120, title: '维修评分'}
+                    , {field: 'value', width: 120, title: '总评分'}
+                    , {field: 'name', width: 120, title: '维修工'}
+                    , {title:'操作',align: 'center', toolbar: '#barDemo'}
+                ]
+            ]
+            , page: true
+            , request: {
+                pageName: 'page',
+                limitName: 'size'
+            }
+            , done: function () {
+
+                $("[data-field='maintenanceStatus']").children().each(function () {
+                    if ($(this).text() == '1') {
+                        $(this).text("维修中")
+                    } else if ($(this).text() == '0') {
+                        $(this).text("未维修")
+                    }
+                });
+
+
+
+            }
+
+        }
+        table.render(opt);
+        table.on('checkbox(ListTBs)', function (obj) {
+            console.log(obj, "cgy")
+            alert(obj)
+        });
+        table.on('tool(demo)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data //获得当前行数据
+                , layEvent = obj.event; //获得 lay-event 对应的值
+          if (layEvent === 'edit') {
+              layer.open({
+                  title: '增加',
+                  type: 1,
+                  skin: 'layui-layer-rim', //加上边框
+                  area: ['420px', '440px'],
+                  shadeClose: false, //点击遮罩关闭
+                  content:'<form action="" class="layui-form form-horizontal">\n' +
+                  '<input name="evaluateid" type="hidden" value="'+data.evaluateid+'"/>' +
+                  '        <div class="form-box">\n' +
+                  '            <div class="form-group"><label class="col-sm-3 control-label">名称:</label>\n' +
+                  '                <div class="col-sm-8 no-padding">\n' +
+                  '                    <input type="text" lay-verify="title" name="name" disabled value="'+data.orderName+'" class="form-control">\n' +
+                  '                </div>\n' +
+                  '            </div>\n' +
+                  '            <div class="form-group">\n' +
+                  '                <label class="col-sm-3 control-label">服务评分:</label>\n' +
+                  '                <div class="col-sm-8 no-padding">\n' +
+                  '                    <select lay-ignore name="server" class="form-control">\n' +
+                  '\n' +
+                  '                        <option value="100">很满意</option>\n' +
+                  '                        <option value="75">满意</option>\n' +
+                  '                        <option value="50">一般</option>\n' +
+                  '                        <option value="25">差</option>\n' +
+                  '                    </select>\n' +
+                  '                </div>\n' +
+                  '                \'\n' +
+                  '            </div>\n' +
+                  '            <div class="form-group">\n' +
+                  '                <label class="col-sm-3 control-label">维修评分:</label>\n' +
+                  '                <div class="col-sm-8 no-padding">\n' +
+                  '                    <select lay-ignore name="maintenance" class="form-control">\n' +
+                  '\n' +
+                  '                        <option value="100">很满意</option>\n' +
+                  '                        <option value="75">满意</option>\n' +
+                  '                        <option value="50">一般</option>\n' +
+                  '                        <option value="25">差</option>\n' +
+                  '                    </select>\n' +
+                  '                </div>\n' +
+                  '            </div>\n' +
+                  '            <div class="form-group">\n' +
+                  '                <label class="col-sm-3 control-label">总评分:</label>\n' +
+                  '                <div class="col-sm-8 no-padding">\n' +
+                  '                    <select lay-ignore name="value" class="form-control">\n' +
+                  '\n' +
+                  '                        <option value="100">很满意</option>\n' +
+                  '                        <option value="75">满意</option>\n' +
+                  '                        <option value="50">一般</option>\n' +
+                  '                        <option value="25">差</option>\n' +
+                  '                    </select>\n' +
+                  '                </div>\n' +
+                  '            </div>\n' +
+                  '            <div class="form-group">\n' +
+                  '                <label class="col-sm-3 control-label">维修工:</label>\n' +
+                  '                <div class="col-sm-8 no-padding">\n' +
+                  '                  <input type="text" value="'+data.name+'" disabled class="form-control"/>\n' +
+                  '                </div>\n' +
+                  '            </div>\n' +
+                  '            <div class="col-sm-12 m-t text-center">\n' +
+                  '                <button class="btn btn-primary " id="BtnSave" lay-submit lay-filter="addEvaluate" type="button"><i\n' +
+                  '                        class="fa fa-floppy-o"></i> 保存\n' +
+                  '                </button>\n' +
+                  '            </div>\n' +
+                  '        </div>\n' +
+                  '    </form>'
+
+              });
+            }
+        });
+    });
+
+    layui.use('form', function () {
+        var form = layui.form;
+        //监听提交
+        form.on('submit(addEvaluate)', function (data) {
+            $.ajax({
+                type: "POST",
+                url: "/evaluate/updateEvaluate",
+                data: JSON.stringify(data.field),
+                contentType: 'application/json;charset=UTF-8',
+                dataType: "json",
+                success: function (data) {
+                    layer.msg(data.message, {
+                        time: 0 //不自动关闭
+                        , btn: ['确定']
+                        , yes: function (index) {
+                            layer.close(index);
+                            window.location.href = '/CustomerEvaluate'
+                        }
+                    });
+
+                }
+            });
+            return false;
+        });
+    });
+
+</script>
+<script>
+
+
+    $(document).ready(function () {
+        customerInit()
+        $(".i-checks").iCheck({
+            checkboxClass: "icheckbox_square-green",
+            radioClass: "iradio_square-green"
+        });
+
+
+    });
+
+</script>
+</body>
+</html>

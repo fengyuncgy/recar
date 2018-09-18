@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/style.min_EDT.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/master.css">
+    <link rel="stylesheet" type="text/css" href="css/plugins/iCheck/custom.css">
+    <link rel="stylesheet" type="text/css" href="js/plugins/layer/skin/layer.css">
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+    <script src="layui/layui.js" charset="utf-8"></script>
+    <title>账号设置</title>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>工资信息</h5>
+                    <div style="float:right; ">
+                        <input id="id" name="id" type="hidden"/>
+                        <h5 id="name" style="margin-left: 200px"></h5>
+                        <h5 id="sex" style="margin-left: 30px">性别：</h5>
+                    </div>
+                </div>
+                <div class="ibox-content" id="tab-box">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">基本工资</label>
+                        <div class="layui-input-block">
+
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">加薪</label>
+                        <div class="layui-input-block">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">完成订单量</label>
+                        <div class="layui-input-block">
+
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">本月完成量</label>
+                        <div class="layui-input-block">
+
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">工时价格</label>
+                        <div class="layui-input-block">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">提成比例</label>
+                        <div class="layui-input-block">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/plugins/iCheck/icheck.min.js"></script>
+    <script src="js/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <script src="js/plugins/layer/layer.min.js"></script>
+    <script src="js/util.js"></script>
+
+
+    <script>
+
+        function ajaxRequest(url, type, data) {
+            $.ajax({
+                type: type,
+                url: url,
+                data: data,
+                contentType: 'application/json;charset=UTF-8',
+                dataType: "json",
+                success: function (data) {
+                    layer.msg(data.message, {
+                        time: 0 //不自动关闭
+                        , btn: ['确定']
+                        , yes: function (index) {
+                            layer.close(index);
+                            window.location.href = '/Salary'
+                        }
+                    });
+
+                }
+            });
+        }
+
+    </script>
+    <script>
+
+        function dataInit(id) {
+            $.ajax({
+                type: "get",
+                url: "/employee/findSalaryDtoByEmployeeid?id=" + id,
+                async: false,
+                success: function (data) {
+                    console.log(data)
+                    var a = $('.layui-input-block')
+                    a[0].append(data.baseSalary)
+                    a[1].append(data.addSalary)
+                    a[2].append(data.finishCount)
+                    a[3].append(data.monthCount)
+                    a[4].append(data.hours)
+                    a[5].append(data.addProportion)
+
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            employeeInit(),
+            dataInit($("#id").val())
+        });
+
+    </script>
+</body>
+</html>
